@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F9013AE7-2593-4ABC-ADFC-BBD2659517AA</string>
+	<key>IDESourceControlProjectName</key>
+	<string>SimplerMaskTest</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>55AB6C96-23F9-4396-AC7E-39AA357DC000</key>
+		<string>http://git.oschina.net/rhcad/iOS-MagnifierGlass.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>SimplerMaskTest.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>55AB6C96-23F9-4396-AC7E-39AA357DC000</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>http://git.oschina.net/rhcad/iOS-MagnifierGlass.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>55AB6C96-23F9-4396-AC7E-39AA357DC000</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>55AB6C96-23F9-4396-AC7E-39AA357DC000</string>
+			<key>IDESourceControlWCCName</key>
+			<string>iOS-MagnifierGlass</string>
+		</dict>
+	</array>
+</dict>
+</plist>
