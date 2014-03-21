@@ -1,5 +1,5 @@
 //  MagnifierView.m
-//  Fix CTM by Zhang Yungui <https://github.com/rhcad/touchvg> based on SimplerMaskTest:
+//  Fix CTM in drawRect by Zhang Yungui <https://github.com/rhcad/touchvg> based on SimplerMaskTest:
 //  http://stackoverflow.com/questions/13330975/how-to-add-a-magnifier-to-custom-control
 //
 
@@ -11,19 +11,19 @@
 
 - (id)initWithFrame:(CGRect)frame {
     CGFloat w = 118;    // =imageWidth:126-(outerRadius:3 + 1)*2
-	if (self = [super initWithFrame:CGRectMake(0, 0, w, w)]) {
+    if (self = [super initWithFrame:CGRectMake(0, 0, w, w)]) {
         self.layer.borderColor = [UIColor clearColor].CGColor;
         self.layer.borderWidth = 3;
-		self.layer.cornerRadius = w / 2;
-		self.layer.masksToBounds = YES;
+        self.layer.cornerRadius = w / 2;
+        self.layer.masksToBounds = YES;
         self.opaque = NO;
         self.scale = 1.5f;
-	}
-	return self;
+    }
+    return self;
 }
 
 - (void)setTouchPoint:(CGPoint)pt {
-	touchPoint = pt;
+    touchPoint = pt;
     [self setNeedsDisplay];
     
     if (self.alpha < 0.5f) {
