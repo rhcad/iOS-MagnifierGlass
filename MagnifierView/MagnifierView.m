@@ -1,5 +1,5 @@
 //  MagnifierView.m
-//  Fix CTM in drawRect by Zhang Yungui <https://github.com/rhcad/touchvg> based on SimplerMaskTest:
+//  Fix CTM by Zhang Yungui <https://github.com/rhcad/touchvg> based on SimplerMaskTest:
 //  http://stackoverflow.com/questions/13330975/how-to-add-a-magnifier-to-custom-control
 //
 
@@ -24,37 +24,36 @@
 
 - (void)setTouchPoint:(CGPoint)pt {
     touchPoint = pt;
-    [self setNeedsDisplay];
-    
-    if (self.alpha < 0.5f) {
-        [self performSelector:@selector(show) withObject:nil afterDelay:0.5];
-    } else {
-        [self show];
+    if (self.window) {
+        CGPoint pt = [self calcCenter];
+        
+        if (!CGPointEqualToPoint(self.center, pt) && !self.followFinger) {
+            [UIView beginAnimations:nil context:nil];
+            [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+            [UIView setAnimationDuration:0.2];
+            self.center = pt;
+            [UIView commitAnimations];
+        } else {
+            self.center = pt;
+        }
+        [self setNeedsDisplay];
     }
 }
 
 - (void)show {
-    CGPoint pt = [self calcCenter];
-    
+    [self performSelector:@selector(showDelay) withObject:nil afterDelay:0.5];
+}
+
+- (void)showDelay {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    if (self.alpha < 0.5f || !CGPointEqualToPoint(self.center, pt)) {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        [UIView setAnimationDuration:0.2];
-        self.alpha = 1;
-        self.center = pt;
-        [UIView commitAnimations];
-    }
+    [self.viewToMagnify.superview addSubview:self];
+    NSAssert(self.window, @"Fail to add magnifier view");
+    self.center = [self calcCenter];
 }
 
 - (void)hide {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-    [UIView setAnimationDuration:0.2];
-    self.alpha = 0;
-    [UIView commitAnimations];
+    [self removeFromSuperview];
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -64,9 +63,6 @@
     
     CGContextSaveGState(context);
     CGContextClipToMask(context, self.bounds, mask);
-    
-    CGContextSetFillColorWithColor(context, [UIColor grayColor].CGColor);
-    CGContextFillRect(context, self.bounds);
     
     CGContextTranslateCTM(context, self.frame.size.width / 2, self.frame.size.height / 2);
     CGContextScaleCTM(context, self.scale, self.scale);
@@ -82,10 +78,6 @@
 }
 
 - (CGPoint)calcCenter {
-    if (self.followFinger) {
-        return CGPointMake(touchPoint.x, touchPoint.y - 80);
-    }
-    
     if (_topMargin < 1) {
         UIViewController *controller = (UIViewController *)self.viewToMagnify.nextResponder;
         
@@ -99,25 +91,47 @@
     
     CGFloat margin = self.frame.size.width / 2 + 5;
     CGRect rect = CGRectInset(self.viewToMagnify.bounds, margin, margin + _topMargin);
-    CGPoint pt = [self.superview convertPoint:self.center toView:self.viewToMagnify];
+    CGPoint pt;
     
-    if (!CGRectContainsPoint(CGRectInset(rect, -1, -1), pt)) {
-        pt = rect.origin;
-    }
-    
-    CGFloat dist = [self distanceBetween:pt and:touchPoint];
-    
-    if (dist < margin + 20) {
-        if (pt.x < CGRectGetMidX(rect)) {
+    if (self.followFinger) {
+        pt = CGPointMake(touchPoint.x, touchPoint.y - 100);
+        
+        if (pt.x < rect.origin.x) {
+            pt.x = rect.origin.x;
+        } else if (pt.x > CGRectGetMaxX(rect)) {
             pt.x = CGRectGetMaxX(rect);
-            if ([self distanceBetween:pt and:touchPoint] < dist) {
-                pt.x = CGRectGetMinX(rect);
+        }
+        
+        if (pt.y < rect.origin.y) {
+            pt.y = rect.origin.y;
+            if (pt.x < CGRectGetMidX(rect)) {
+                pt.x += self.frame.size.width;
+            }
+            else {
+                pt.x -= self.frame.size.width;
             }
         }
-        else {
-            pt.x = CGRectGetMinX(rect);
-            if ([self distanceBetween:pt and:touchPoint] < dist) {
+    } else {
+        pt = [self.superview convertPoint:self.center toView:self.viewToMagnify];
+        
+        if (!CGRectContainsPoint(CGRectInset(rect, -1, -1), pt)) {
+            pt = rect.origin;
+        }
+        
+        CGFloat dist = [self distanceBetween:pt and:touchPoint];
+        
+        if (dist < margin + 20) {
+            if (pt.x < CGRectGetMidX(rect)) {
                 pt.x = CGRectGetMaxX(rect);
+                if ([self distanceBetween:pt and:touchPoint] < dist) {
+                    pt.x = CGRectGetMinX(rect);
+                }
+            }
+            else {
+                pt.x = CGRectGetMinX(rect);
+                if ([self distanceBetween:pt and:touchPoint] < dist) {
+                    pt.x = CGRectGetMaxX(rect);
+                }
             }
         }
     }

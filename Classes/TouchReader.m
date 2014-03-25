@@ -15,11 +15,8 @@
 		loop = [[MagnifierView alloc] init];
 		loop.viewToMagnify = self;
         loop.followFinger = YES;
-        [self.superview addSubview:loop];
 	}
-    
-    // add the loop to the superview.  if we add it to the view it magnifies, it'll magnify itself!
-    //[self.superview addSubview:loop];
+    [loop show];
 	
 	UITouch *touch = [touches anyObject];
 	loop.touchPoint = [touch locationInView:self];
@@ -31,13 +28,11 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    //[loop hide];
-	//[loop removeFromSuperview];
+    [loop hide];
 }
 
 - (void)dealloc {
 	[loop release];
-	loop = nil;
 	[super dealloc];
 }
 
